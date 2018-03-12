@@ -3,24 +3,10 @@ import csv
 
 def main():
                   # *******  Part 1: Getting values from csv file *******
-  # Variables
-  firstName = [] 
-  lastName = []
-  address = []
-  phone = []
-  email = []
-  uid = []
-  
-  csvData = open("Program_1/data.csv", newline='')  #Open file
+
+  csvData = open("Program_1/ArrestData.csv", newline='')  #Open file
   reader = csv.reader(csvData)    #Read data from file
-  for row in reader:   #Retreiving data from file
-    firstName.append(row[0])
-    lastName.append(row[1])
-    address.append(row[2])
-    phone.append(row[3])
-    email.append(row[4])
-    uid.append(row[5])
-  
+
                  # *******  Part 2: Inserting values into database *******
   server = 'KJAIT2017\SQLEXPRESS' 
   database = 'AddressBook' 
@@ -30,12 +16,15 @@ def main():
   conn = pyodbc.connect('DRIVER={SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
   # Creating a cursor
   cursor = conn.cursor()
-  # Executing cursor to insert values in database table
-  for i in range(len(firstName)):
-    cursor.execute("INSERT Personnel (FirstName, LastName, Address, Phone, Email, Id) VALUES (?, ?, ?, ?, ?, ?)", firstName[i], lastName[i], address[i], phone[i], email[i], uid[i])
-  print("Record Inserted")
+  # # Executing cursor to insert values in database table
+  i=0
+  for row in reader:   #Retreiving data from file
+   cursor.execute("INSERT ArrestData (_id, PK, CCR, AGE, GENDER, RACE, ARRESTTIME, ARRESTLOCATION, OFFENSES, INCIDENTLOCATION, INCIDENTNEIGHBORHOOD, INCIDENTZONE, INCIDENTTRACT, COUNCIL_DISTRICT, PUBLIC_WORKS_DIVISION, X, Y) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", row[0], row[1], row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12],row[13],row[14],row[15],row[16])
+   conn.commit()
+   print("Record inserted "+str(i))
+   i=i+1
   # Make sure data is committed to the database
-  conn.commit()
+ 
   # Close database connection
   conn.close()
 
